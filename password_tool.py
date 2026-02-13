@@ -50,9 +50,64 @@ def check_password_strength(password):
     
     Hint: Use .isdigit(), .isupper(), .islower() and string.punctuation
     """
-    # TODO: Implement this function
-    pass
+    points = 0
+    strength = ''
+    feedback = []
+    feedback.append("Elements Missing: ")
+    
+    hasNum = False 
+    hasCap = False 
+    hasLow = False
+    hasSpecial = False 
 
+    length = len(password)
+    if length >= 8: 
+        points+=20
+        if length >= 12: 
+            points+=10
+    else: 
+        feedback.append('too few characters')
+    i = 0
+    while i < length: 
+        if not hasNum and password[i].isdigit(): 
+            points+=20
+            hasNum = True
+        if not hasCap and password[i].isupper():
+            points+=20
+            hasCap = True 
+        if not hasLow and password[i].islower():
+            points+=20
+            hasLow = True
+        if not hasSpecial and password[i] in string.punctuation:
+            points+=20
+            hasSpecial = True
+        i+=1
+    if password not in COMMON_PASSWORDS:
+        points+=10
+    if not hasNum: 
+        feedback.append('numerical character')
+    if not hasCap:
+        feedback.append('uppercase letter')
+    if not hasLow: 
+        feedback.append('lowercase letter')
+    if not hasSpecial:
+        feedback.append('special character')
+
+    if points <= 39: 
+        strength = "Weak"
+    elif points >=40 and points <=69:
+        strength = "Medium"
+    else: 
+        strength = "Strong"
+
+    password_return = {
+        "password": password, 
+        "score": points,
+        "strength": strength,
+        "feedback": feedback
+    }
+
+    return password_return
 
 # ============================================
 # TODO 2: Password Generator
@@ -82,9 +137,24 @@ def generate_password(length=12, use_special=True):
     Hint: Use string.ascii_uppercase, string.ascii_lowercase, 
           string.digits, and random.choice()
     """
-    # TODO: Implement this function
-    pass
+    # TODO: Implement this function    
+    upper = random.choice(string.ascii_uppercase)
+    lower = random.choice(string.ascii_lowercase)
+    num = random.choice(string.digits)
+    password = [upper,lower,num]
 
+    all_chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
+    if use_special:
+        special = random.choice(string.punctuation)
+        password.append(special)
+        all_chars += string.punctuation
+    true_len = max(length, 8)
+    for i in range(true_len - len(password)):
+        password.append(random.choice(all_chars))
+
+    random.shuffle(password)
+    return "".join(password)
+    
 
 # ============================================
 # Simple Testing
